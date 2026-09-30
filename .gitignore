@@ -1,0 +1,7 @@
+data/real/*.xlsx
+data/real/*.csv
+data/real/*.zip
+outputs/
+__pycache__/
+*.pyc
+.venv/

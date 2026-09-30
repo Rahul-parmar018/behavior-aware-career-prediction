@@ -1,0 +1,187 @@
+AMEO 2015 cleaned students: 3979
+Academic shock rate: 26.3%; any time delay: 38.2%
+
+Feature summary (all cleaned students):
+      count   mean    std    min    25%    50%    75%    max
+ASR  3979.0  0.500  0.289  0.000  0.250  0.500  0.750  1.000
+SSR  3979.0  0.500  0.289  0.000  0.250  0.500  0.750  1.000
+TSR  3979.0  0.779  0.288  0.087  0.500  1.000  1.000  1.000
+CSS  3979.0  0.593  0.155  0.090  0.488  0.596  0.699  0.991
+Feature correlations (Pearson):
+       ASR    SSR    TSR    CSS
+ASR  1.000 -0.012 -0.119  0.539
+SSR -0.012  1.000 -0.064  0.573
+TSR -0.119 -0.064  1.000  0.505
+CSS  0.539  0.573  0.505  1.000
+==============================================================================
+E1  CAREER-DOMAIN CLASSIFICATION  (real AMEO 2015 data)
+==============================================================================
+Students with a mappable career domain: 3613  |  classes: 6
+   Software_Dev              2176  (60.2%)
+   Management_Sales_Ops       403  (11.2%)
+   QA_Testing                 341  (9.4%)
+   IT_Infra_Support           264  (7.3%)
+   Core_Engineering           250  (6.9%)
+   Data_Business_Analysis     179  (5.0%)
+Split: stratified 80/20 -> train 2890, test 723 (seed 42)
+
+Trivial baselines (test set):
+   Majority class         acc=0.602  bal_acc=0.167  macroF1=0.125  kappa=0.000
+   Stratified random      acc=0.396  bal_acc=0.167  macroF1=0.166  kappa=0.006
+
+Held-out test set, 95% bootstrap CI in brackets (1000 resamples):
+Feature set                               Model                              Acc         Bal.Acc        Macro-F1           Kappa  Fit s
+Academic (CGPA + marks + specialization)  RandomForest          0.503[0.47,0.54]0.269[0.23,0.30]0.249[0.22,0.28]0.184[0.14,0.23]   1.01
+Academic (CGPA + marks + specialization)  LogisticRegression    0.365[0.33,0.40]0.283[0.24,0.32]0.204[0.18,0.23]0.145[0.11,0.18]   0.05
+Academic (CGPA + marks + specialization)  HistGradientBoosting  0.477[0.44,0.51]0.232[0.20,0.27]0.229[0.20,0.26]0.145[0.10,0.19]  13.93
+Behavioral core (ASR, SSR, TSR)           RandomForest          0.404[0.37,0.44]0.195[0.16,0.23]0.192[0.16,0.22]0.054[0.02,0.10]   1.01
+Behavioral core (ASR, SSR, TSR)           LogisticRegression    0.340[0.30,0.37]0.216[0.18,0.25]0.184[0.16,0.21]0.090[0.05,0.13]   0.01
+Behavioral core (ASR, SSR, TSR)           HistGradientBoosting  0.326[0.29,0.36]0.164[0.14,0.19]0.160[0.14,0.18]0.019[-0.02,0.05]   7.88
+Behavioral (ASR, SSR, TSR + domain SSR)   RandomForest          0.548[0.51,0.58]0.273[0.24,0.31]0.247[0.21,0.28]0.203[0.16,0.25]   1.00
+Behavioral (ASR, SSR, TSR + domain SSR)   LogisticRegression    0.394[0.36,0.43]0.308[0.27,0.35]0.249[0.22,0.28]0.182[0.15,0.22]   0.04
+Behavioral (ASR, SSR, TSR + domain SSR)   HistGradientBoosting  0.528[0.49,0.56]0.243[0.21,0.28]0.246[0.21,0.28]0.146[0.10,0.19]  13.16
+Proposed (Academic + Behavioral)          RandomForest          0.567[0.53,0.60]0.280[0.25,0.31]0.258[0.23,0.29]0.220[0.17,0.27]   1.12
+Proposed (Academic + Behavioral)          LogisticRegression    0.371[0.33,0.41]0.301[0.26,0.35]0.239[0.21,0.27]0.165[0.13,0.20]   0.09
+Proposed (Academic + Behavioral)          HistGradientBoosting  0.553[0.52,0.59]0.223[0.19,0.25]0.222[0.19,0.26]0.152[0.11,0.19]  18.33
+Proposed + CSS (redundancy check)         RandomForest          0.563[0.53,0.60]0.269[0.24,0.30]0.245[0.21,0.27]0.203[0.16,0.25]   1.12
+Proposed + CSS (redundancy check)         LogisticRegression    0.371[0.34,0.40]0.301[0.26,0.34]0.239[0.21,0.27]0.165[0.13,0.20]   0.09
+Proposed + CSS (redundancy check)         HistGradientBoosting  0.559[0.52,0.59]0.237[0.21,0.27]0.240[0.20,0.28]0.164[0.12,0.21]  18.77
+Proposed + personality (extended)         RandomForest          0.581[0.54,0.62]0.245[0.22,0.27]0.221[0.19,0.25]0.191[0.15,0.23]   1.07
+Proposed + personality (extended)         LogisticRegression    0.357[0.32,0.39]0.288[0.25,0.33]0.231[0.20,0.26]0.152[0.12,0.19]   0.12
+Proposed + personality (extended)         HistGradientBoosting  0.553[0.52,0.59]0.197[0.18,0.22]0.186[0.16,0.22]0.117[0.08,0.16]  21.29
+
+McNemar test, Academic vs Proposed (same model, same test students):
+   RandomForest           chi2=15.341  p=8.975e-05  (only academic correct=43, only proposed correct=89)
+   LogisticRegression     chi2=0.065  p=0.7984  (only academic correct=67, only proposed correct=71)
+   HistGradientBoosting   chi2=17.673  p=2.624e-05  (only academic correct=55, only proposed correct=110)
+
+Repeated stratified 5x5 CV, RandomForest, macro-F1 (mean +/- SD):
+   Academic (CGPA + marks + specialization)   0.2380 +/- 0.0158
+   Behavioral (ASR, SSR, TSR + domain SSR)    0.2496 +/- 0.0115
+   Proposed (Academic + Behavioral)           0.2544 +/- 0.0173
+   Proposed + CSS (redundancy check)          0.2559 +/- 0.0151
+   Corrected resampled t-test, Proposed vs Academic: t=1.413, p=0.1705
+   Corrected resampled t-test, Proposed+CSS vs Proposed: t=0.210, p=0.8358
+
+==============================================================================
+E2  FULL TEST-SET OUTCOME  (Proposed, RandomForest)
+==============================================================================
+                        precision    recall  f1-score   support
+
+          Software_Dev      0.716     0.830     0.769       435
+            QA_Testing      0.174     0.059     0.088        68
+      IT_Infra_Support      0.219     0.132     0.165        53
+Data_Business_Analysis      0.000     0.000     0.000        36
+      Core_Engineering      0.263     0.500     0.345        50
+  Management_Sales_Ops      0.206     0.160     0.181        81
+
+              accuracy                          0.567       723
+             macro avg      0.263     0.280     0.258       723
+          weighted avg      0.505     0.567     0.527       723
+
+Most frequent failure cases (actual -> predicted):
+   QA_Testing -> Software_Dev                         38
+   Management_Sales_Ops -> Software_Dev               35
+   IT_Infra_Support -> Software_Dev                   28
+   Data_Business_Analysis -> Software_Dev             27
+   Software_Dev -> Core_Engineering                   25
+   Software_Dev -> Management_Sales_Ops               23
+
+==============================================================================
+E3  PERMUTATION FEATURE IMPORTANCE (test set, macro-F1 drop, 20 repeats)
+==============================================================================
+   ssr_ComputerProgramming      +0.0223 +/- 0.0152
+   12percentage                 +0.0179 +/- 0.0073
+   10percentage                 +0.0168 +/- 0.0080
+   ssr_Quant                    +0.0162 +/- 0.0077
+   ssr_ElectronicsAndSemicon    +0.0158 +/- 0.0052
+   ssr_English                  +0.0157 +/- 0.0098
+   collegeGPA                   +0.0106 +/- 0.0079
+   spec_ECE                     +0.0087 +/- 0.0069
+   ssr_Logical                  +0.0083 +/- 0.0075
+   spec_CS_IT                   +0.0078 +/- 0.0100
+   spec_MECH                    +0.0078 +/- 0.0027
+   SSR                          +0.0078 +/- 0.0070
+   ASR                          +0.0062 +/- 0.0082
+   ssr_TelecomEngg              +0.0046 +/- 0.0029
+   spec_MCA                     +0.0039 +/- 0.0018
+
+==============================================================================
+E4  DOMAIN-CONSISTENCY VALIDATION LAYER
+==============================================================================
+Threshold calibrated on training folds (max accepted macro-F1 s.t. coverage>=70%): SSR_domain >= 0.05
+Test set: coverage=92.3%, rejected=7.7%
+   all                        acc=0.567  bal_acc=0.280  macroF1=0.258
+   accepted                   acc=0.577  bal_acc=0.291  macroF1=0.263
+   rejected                   acc=0.446  bal_acc=0.211  macroF1=0.162
+   prob_gate_same_coverage    acc=0.598  bal_acc=0.291  macroF1=0.269
+
+==============================================================================
+E5  K-MEANS RISK CLUSTERS ON (ASR, SSR, TSR) - VALIDATION
+==============================================================================
+ k  silhouette  davies_bouldin  calinski_harabasz  inertia
+ 2       0.347           1.326           1904.336 8071.882
+ 3       0.314           1.149           1810.911 6246.733
+ 4       0.346           1.193           1813.349 5039.760
+ 5       0.351           1.018           2004.104 3956.320
+ 6       0.369           0.887           2145.869 3225.828
+Bootstrap stability k=3 (50 resamples): ARI = 0.940 +/- 0.096
+Cluster centroids (standardised) and data-derived names:
+   Skill-deficit   ASR=-0.02  SSR=-0.89  TSR=+0.76
+   Time-delayed    ASR=+0.16  SSR=+0.08  TSR=-1.24
+   Resilient       ASR=-0.18  SSR=+0.83  TSR=+0.77
+
+Cluster profiles and EXTERNAL outcomes (not used for clustering):
+                  n    ASR    SSR    TSR    CSS  early_exit_rate  median_salary  median_tenure_m
+risk                                                                                            
+Resilient      1205  0.450  0.739  1.000  0.730            0.239       320000.0           18.955
+Skill-deficit  1258  0.494  0.243  0.998  0.579            0.303       270000.0           16.951
+Time-delayed   1516  0.545  0.524  0.421  0.497            0.290       300000.0           16.032
+Early exit vs cluster: chi2=13.43, p=0.001212
+Salary vs cluster: Kruskal-Wallis H=71.00, p=3.819e-16
+
+==============================================================================
+E6  CSS WEIGHTING AND EFFECT SIZE (validated on real job outcomes)
+==============================================================================
+Early attrition sample (joined <= 2014-12, observable >= 12 months): n=3732, exit rate=27.8%
+Equal weights: AUC(early exit)=0.535, Spearman(CSS, salary)=0.102
+Learned weights (ASR, SSR, TSR) = [-0.119, 0.697, 0.184], CV AUC(early exit)=0.554
+Weight grid (66 combinations): AUC range 0.488-0.557; salary rho range -0.059-0.187
+Best salary weights: ASR=0.0, SSR=0.8, TSR=0.2
+
+Each behavioral feature vs outcomes:
+   ASR  Spearman(salary) rho=-0.059 (p=0.000183)   AUC(early exit)=0.488
+   SSR  Spearman(salary) rho=+0.179 (p=6.99e-30)   AUC(early exit)=0.555
+   TSR  Spearman(salary) rho=+0.047 (p=0.00306)   AUC(early exit)=0.510
+   CSS  Spearman(salary) rho=+0.102 (p=1.25e-10)   AUC(early exit)=0.535
+
+Cohen's d, d = (M1 - M2) / s_p,  s_p = sqrt(((n1-1)s1^2 + (n2-1)s2^2)/(n1+n2-2))
+   (a) log-salary, top-tertile CSS (n=1327, M=12.554, SD=0.527) vs bottom-tertile CSS (n=1326, M=12.450, SD=0.552): d=0.194  95% CI [0.116, 0.271]
+   (b) CSS, retained >=12 months (n=2694, M=0.600, SD=0.155) vs early exit (n=1038, M=0.581, SD=0.157): d=0.119  95% CI [0.049, 0.202]
+
+One-way ANOVA across career domains (eta^2 = effect size):
+   ASR: F=2.37, p=0.0372, eta^2=0.0033
+   SSR: F=26.64, p=1.57e-26, eta^2=0.0356
+   TSR: F=2.65, p=0.0215, eta^2=0.0037
+
+==============================================================================
+E7  SENSITIVITY ANALYSIS (RandomForest, Proposed features, macro-F1 on fixed split)
+==============================================================================
+Input noise: Gaussian sigma (percentage points) added to 10th/12th/GPA marks; skill scores get sigma/10 x their SD. 10 repeats each.
+   sigma= 0: macro-F1=0.2432 +/- 0.0000   acc=0.5671 +/- 0.0000
+   sigma= 1: macro-F1=0.2542 +/- 0.0083   acc=0.5692 +/- 0.0063
+   sigma= 2: macro-F1=0.2437 +/- 0.0096   acc=0.5658 +/- 0.0084
+   sigma= 5: macro-F1=0.2429 +/- 0.0052   acc=0.5696 +/- 0.0093
+   sigma=10: macro-F1=0.2308 +/- 0.0133   acc=0.5631 +/- 0.0082
+Shock threshold tau (SD units):
+   tau=0.25: macro-F1=0.2666  acc=0.5698
+   tau=0.50: macro-F1=0.2500  acc=0.5643
+   tau=0.75: macro-F1=0.2784  acc=0.5712
+   tau=1.00: macro-F1=0.2428  acc=0.5588
+Recovery weight lambda:
+   lambda=0.0: macro-F1=0.2436  acc=0.5574
+   lambda=0.5: macro-F1=0.2479  acc=0.5685
+   lambda=1.0: macro-F1=0.2500  acc=0.5643
+   lambda=2.0: macro-F1=0.2708  acc=0.5685
+
+Total runtime: 396s
